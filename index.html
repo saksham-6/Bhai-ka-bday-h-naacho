@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Anuj 2.0 Ultra</title>
+<style>
+body{
+margin:0;
+background:black;
+color:white;
+font-family:monospace;
+text-align:center;
+overflow-x:hidden;
+}
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+.hidden{display:none;}
+
+h1{
+font-size:60px;
+margin-top:15%;
+animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+from{text-shadow:0 0 10px #00f;}
+to{text-shadow:0 0 30px #00f,0 0 60px cyan;}
+}
+
+button{
+padding:15px 30px;
+font-size:18px;
+border:none;
+background:cyan;
+cursor:pointer;
+border-radius:10px;
+margin-top:20px;
+}
+
+.slideshow{
+margin-top:40px;
+}
+.slideshow img{
+width:300px;
+height:300px;
+border-radius:20px;
+box-shadow:0 0 20px cyan;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="intro">
+<h2 id="typing"></h2>
+</div>
+
+<div id="main" class="hidden">
+<h1>HAPPY 20TH BIRTHDAY<br>ANUJ SHARMA 🚀</h1>
+<button onclick="startCelebration()">ENTER LEGEND MODE 😎</button>
+
+<div class="slideshow hidden" id="slideshow">
+<img id="slide" src="photo1.jpg">
+</div>
+
+<button class="hidden" id="secretBtn" onclick="showMessage()">Secret Message 💙</button>
+</div>
+
+<div id="message" class="hidden">
+<h2>
+Anuj 💙<br><br>
+From crazy memories to unstoppable dreams...<br>
+You’re not just 20 — you’re evolving.<br>
+Stay fearless. Stay legendary.<br>
+Love you always 🤜🤛
+</h2>
+</div>
+
+<audio id="music" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Typing Effect
+let text="Accessing System...\nTarget: Anuj Sharma\nAge Upgrade Detected...\nActivating Version 2.0 Ultra...";
+let i=0;
+function type(){
+if(i<text.length){
+document.getElementById("typing").innerHTML+=text.charAt(i);
+i++;
+setTimeout(type,40);
+}else{
+setTimeout(()=>{
+document.getElementById("intro").classList.add("hidden");
+document.getElementById("main").classList.remove("hidden");
+},1000);
+}
+}
+type();
+
+// Matrix Effect
+let canvas=document.getElementById("matrix");
+let ctx=canvas.getContext("2d");
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+
+let letters="ANUJSHARMA2020";
+letters=letters.split("");
+let fontSize=14;
+let columns=canvas.width/fontSize;
+let drops=[];
+for(let x=0;x<columns;x++) drops[x]=1;
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#0F0";
+ctx.font=fontSize+"px monospace";
+for(let i=0;i<drops.length;i++){
+let text=letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+if(drops[i]*fontSize>canvas.height&&Math.random()>0.975) drops[i]=0;
+drops[i]++;
+}
+}
+setInterval(draw,33);
+
+// Celebration Mode
+function startCelebration(){
+document.getElementById("music").play();
+confetti();
+startFireworks();
+document.getElementById("slideshow").classList.remove("hidden");
+document.getElementById("secretBtn").classList.remove("hidden");
+startSlideshow();
+}
+
+// Confetti
+function confetti(){
+for(let i=0;i<200;i++){
+let conf=document.createElement("div");
+conf.style.position="fixed";
+conf.style.width="10px";
+conf.style.height="10px";
+conf.style.background="hsl("+Math.random()*360+"deg,100%,50%)";
+conf.style.left=Math.random()*window.innerWidth+"px";
+conf.style.top="-10px";
+conf.style.zIndex="999";
+document.body.appendChild(conf);
+let fall=setInterval(()=>{
+conf.style.top=parseInt(conf.style.top)+5+"px";
+if(parseInt(conf.style.top)>window.innerHeight){
+clearInterval(fall);
+conf.remove();
+}
+},20);
+}
+}
+
+// Fireworks
+function startFireworks(){
+setInterval(()=>{
+let fw=document.createElement("div");
+fw.style.position="fixed";
+fw.style.width="5px";
+fw.style.height="5px";
+fw.style.borderRadius="50%";
+fw.style.background="white";
+fw.style.left=Math.random()*window.innerWidth+"px";
+fw.style.top=Math.random()*window.innerHeight+"px";
+fw.style.boxShadow="0 0 20px 10px hsl("+Math.random()*360+"deg,100%,50%)";
+document.body.appendChild(fw);
+setTimeout(()=>fw.remove(),500);
+},500);
+}
+
+// Slideshow
+let images=["photo1.jpg","photo2.jpg","photo3.jpg"];
+let index=0;
+function startSlideshow(){
+setInterval(()=>{
+index=(index+1)%images.length;
+document.getElementById("slide").src=images[index];
+},2000);
+}
+
+// Secret Message
+function showMessage(){
+document.getElementById("message").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
