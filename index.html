@@ -14,19 +14,20 @@ color:white;
 text-align:center;
 }
 
-/* VIDEO BACKGROUND */
+/* VIDEO */
 video{
 position:fixed;
 top:0;
 left:0;
-width:100%;
-height:100%;
+width:100vw;
+height:100vh;
 object-fit:cover;
-z-index:-5;
+z-index:-1;
 filter:brightness(0.5);
+pointer-events:none;
 }
 
-/* INTRO SCREEN */
+/* INTRO */
 #intro{
 position:fixed;
 width:100%;
@@ -39,7 +40,6 @@ font-size:30px;
 z-index:100;
 animation:introFade 4s forwards;
 }
-
 @keyframes introFade{
 0%{opacity:1;}
 85%{opacity:1;}
@@ -51,12 +51,6 @@ h1{
 margin-top:15vh;
 font-size:48px;
 text-shadow:0 0 20px #00bfff,0 0 40px #1e90ff;
-animation:glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow{
-from{text-shadow:0 0 10px #00bfff;}
-to{text-shadow:0 0 40px #1e90ff;}
 }
 
 /* BUTTON */
@@ -68,14 +62,7 @@ background:linear-gradient(45deg,#ff4d94,#00bfff);
 color:white;
 font-size:18px;
 cursor:pointer;
-transition:0.4s;
-box-shadow:0 0 25px rgba(255,255,255,0.4);
 margin:10px;
-}
-
-button:hover{
-transform:scale(1.1);
-box-shadow:0 0 40px #00bfff;
 }
 
 /* SLIDESHOW */
@@ -88,42 +75,14 @@ height:100%;
 display:none;
 z-index:2;
 }
-
 #slide{
 width:100%;
 height:100%;
 object-fit:cover;
-opacity:0;
-transition:opacity 2s ease-in-out, transform 8s ease-in-out;
+transition:opacity 2s;
 }
 
-/* MOON */
-.moon{
-position:fixed;
-top:80px;
-right:120px;
-width:120px;
-height:120px;
-border-radius:50%;
-background:white;
-box-shadow:0 0 60px rgba(255,255,255,0.9);
-z-index:4;
-}
-
-/* HEARTS */
-.heart{
-position:fixed;
-font-size:24px;
-animation:float 6s linear infinite;
-}
-
-@keyframes float{
-0%{transform:translateY(100vh);opacity:0;}
-50%{opacity:1;}
-100%{transform:translateY(-10vh);opacity:0;}
-}
-
-/* END SCREEN */
+/* END */
 #endScreen{
 position:fixed;
 top:0;
@@ -132,10 +91,107 @@ width:100%;
 height:100%;
 background:black;
 display:none;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:10;
+}
+
+/* GIFT SECTION */
+#giftSection{
+display:none;
+padding:30px;
+z-index:20;
+position:relative;
+}
+
+.couponContainer{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:20px;
+}
+
+.couponCard{
+width:220px;
+height:160px;
+perspective:1000px;
+cursor:pointer;
+}
+
+.couponInner{
+position:relative;
+width:100%;
+height:100%;
+transition:transform 0.8s;
+transform-style:preserve-3d;
+}
+
+.couponCard.flipped .couponInner{
+transform:rotateY(180deg);
+}
+
+.couponFront, .couponBack{
+position:absolute;
+width:100%;
+height:100%;
+border-radius:20px;
+display:flex;
 align-items:center;
 justify-content:center;
 flex-direction:column;
-z-index:10;
+backface-visibility:hidden;
+box-shadow:0 0 20px rgba(0,0,0,0.6);
+}
+
+.couponFront{
+background:linear-gradient(45deg,#ff4d94,#00bfff);
+font-size:20px;
+}
+
+.couponBack{
+background:#111;
+transform:rotateY(180deg);
+padding:10px;
+}
+
+.code{
+margin-top:10px;
+color:#00bfff;
+font-weight:bold;
+}
+
+/* CONFETTI */
+.confetti{
+position:fixed;
+width:8px;
+height:8px;
+top:0;
+animation:fall 3s linear forwards;
+}
+@keyframes fall{
+0%{transform:translateY(0) rotate(0deg);}
+100%{transform:translateY(100vh) rotate(720deg);}
+}
+
+/* HEARTS */
+.heart{
+position:fixed;
+font-size:24px;
+animation:float 6s linear infinite;
+}
+@keyframes float{
+0%{transform:translateY(100vh);opacity:0;}
+50%{opacity:1;}
+100%{transform:translateY(-10vh);opacity:0;}
+}
+
+/* MOBILE */
+@media(max-width:768px){
+h1{font-size:28px;margin-top:10vh;}
+.couponContainer{flex-direction:column;align-items:center;}
+.couponCard{width:90%;max-width:300px;}
+button{width:90%;}
 }
 </style>
 </head>
@@ -148,8 +204,6 @@ z-index:10;
 <source src="background.mp4" type="video/mp4">
 </video>
 
-<div class="moon"></div>
-
 <h1>Happy 20th Birthday Anuj 💙</h1>
 <button onclick="startExperience()">Unlock Memories</button>
 
@@ -159,72 +213,130 @@ z-index:10;
 
 <div id="endScreen">
 <h1>Forever My Brother 💙</h1>
-<button onclick="location.reload()">Replay Experience</button>
+<div id="giftSection">
+<div class="couponContainer">
+
+<div class="couponCard" onclick="revealCoupon(this,'PIZZA20BRO')">
+<div class="couponInner">
+<div class="couponFront">🍕 Pizza Treat</div>
+<div class="couponBack">
+<p>Free Pizza Anytime</p>
+<span class="code"></span>
+</div>
+</div>
+</div>
+
+<div class="couponCard" onclick="revealCoupon(this,'MOVIENIGHT20')">
+<div class="couponInner">
+<div class="couponFront">🎬 Movie Night</div>
+<div class="couponBack">
+<p>Movie + Snacks</p>
+<span class="code"></span>
+</div>
+</div>
+</div>
+
+<div class="couponCard" onclick="revealCoupon(this,'LONGDRIVE20')">
+<div class="couponInner">
+<div class="couponFront">🚗 Long Drive</div>
+<div class="couponBack">
+<p>Moonlight Ride</p>
+<span class="code"></span>
+</div>
+</div>
+</div>
+
+<div class="couponCard" onclick="revealCoupon(this,'FOREVERBRO')">
+<div class="couponInner">
+<div class="couponFront">🤝 Brother Promise</div>
+<div class="couponBack">
+<p>Always With You</p>
+<span class="code"></span>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<button onclick="location.reload()">Replay</button>
 </div>
 
 <audio id="music" loop>
 <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<audio id="voice">
-<source src="voice.mp3" type="audio/mpeg">
-</audio>
-
 <script>
-let images=[
-"photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg",
-"photo5.jpg","photo6.jpg","photo7.jpg","photo8.jpg",
-"photo9.jpg","photo10.jpg","photo11.jpg","photo12.jpg"
-];
-
+let images=["photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg"];
 let index=0;
 let slide=document.getElementById("slide");
 let music=document.getElementById("music");
-let voice=document.getElementById("voice");
-let interval;
 
 function startExperience(){
-
 music.play().catch(()=>{});
-voice.play().catch(()=>{});
-fadeVolume(music,0.2,1000);
-
-voice.onended=()=>fadeVolume(music,1,2000);
-
 document.getElementById("slideshow").style.display="block";
 changeSlide();
-interval=setInterval(changeSlide,6000);
-
-setTimeout(()=>{
-clearInterval(interval);
-showEnding();
-},images.length*6000);
+setInterval(changeSlide,4000);
+setTimeout(showEnding,images.length*4000);
 }
 
 function changeSlide(){
 slide.src=images[index];
-slide.style.opacity=1;
-slide.style.transform="scale(1.1)";
 index=(index+1)%images.length;
-}
-
-function fadeVolume(audio,target,duration){
-let step=(audio.volume-target)/(duration/50);
-let fade=setInterval(()=>{
-audio.volume-=step;
-if((step>0&&audio.volume<=target)||(step<0&&audio.volume>=target)){
-audio.volume=target;
-clearInterval(fade);
-}
-},50);
 }
 
 function showEnding(){
 document.getElementById("endScreen").style.display="flex";
-fadeVolume(music,0,3000);
+document.getElementById("giftSection").style.display="block";
 }
 
-/* FLOATING HEARTS */
+function revealCoupon(card,code){
+if(!card.classList.contains("flipped")){
+card.classList.add("flipped");
+card.querySelector(".code").innerText="Code: "+code;
+launchConfetti();
+addDownloadButton(card,code);
+}
+}
+
+function launchConfetti(){
+for(let i=0;i<120;i++){
+let c=document.createElement("div");
+c.className="confetti";
+c.style.left=Math.random()*100+"vw";
+c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),3000);
+}
+}
+
+function addDownloadButton(card,code){
+let btn=document.createElement("button");
+btn.innerText="💌 Download Coupon";
+btn.onclick=function(){downloadCoupon(code)};
+card.querySelector(".couponBack").appendChild(btn);
+}
+
+function downloadCoupon(code){
+let canvas=document.createElement("canvas");
+canvas.width=600;canvas.height=350;
+let ctx=canvas.getContext("2d");
+ctx.fillStyle="#111";
+ctx.fillRect(0,0,600,350);
+ctx.fillStyle="#00bfff";
+ctx.font="30px Segoe UI";
+ctx.fillText("🎁 Birthday Coupon 🎁",120,80);
+ctx.fillStyle="white";
+ctx.fillText("Happy 20th Birthday Anuj 💙",80,150);
+ctx.fillStyle="#00bfff";
+ctx.fillText("Code: "+code,200,220);
+let link=document.createElement("a");
+link.download="coupon.png";
+link.href=canvas.toDataURL();
+link.click();
+}
+
+/* Floating Hearts */
 setInterval(()=>{
 let heart=document.createElement("div");
 heart.className="heart";
